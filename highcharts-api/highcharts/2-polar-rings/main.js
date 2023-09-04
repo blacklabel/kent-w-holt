@@ -10,6 +10,9 @@ Highcharts.chart('container', {
             load: function () {
                 // Find the highest value among the series.
                 const max = this.yAxis[0].dataMax;
+
+                this.yAxis[0].removePlotLine('max');
+
                 this.update({
                     yAxis: {
                         max: 2 * max,
@@ -19,7 +22,7 @@ Highcharts.chart('container', {
                                 dashStyle: 'Dash',
                                 color: '#73FF50',
                                 width: 3
-                            },
+                            }
                         ]
                     }
                 });
@@ -47,7 +50,14 @@ Highcharts.chart('container', {
     yAxis: {
         title: {
             enabled: false
-        }
+        },
+        plotLines: [
+            {
+                id: 'max',
+                dashStyle: 'Dash',
+                color: '#43BDFF6C'
+            }
+        ]
     },
     plotOptions: {
         column: {
