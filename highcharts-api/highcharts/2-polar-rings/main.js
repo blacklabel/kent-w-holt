@@ -8,10 +8,9 @@ Highcharts.chart('container', {
         polar: true,
         events: {
             load: function () {
-                // Find the highest value among the series.
-                const max = this.yAxis[0].dataMax;
+                const yAxis = this.yAxis[0];
 
-                this.yAxis[0].removePlotLine('max');
+                const max = yAxis.dataMax;
 
                 this.update({
                     yAxis: {
@@ -26,18 +25,26 @@ Highcharts.chart('container', {
                         ]
                     }
                 });
-                this.yAxis[0].addPlotLine({
+
+                yAxis.addPlotLine({
                     id: '1.75*max',
                     value: 1.75 * max,
                     dashStyle: 'Solid',
                     color: '#FD7E7E'
                 });
-                this.yAxis[0].addPlotLine({
-                    id: 'max',
-                    value: max,
-                    dashStyle: 'Dash',
-                    color: '#43BDFF6C'
-                });
+
+                this.renderer.circle(
+                    this.plotLeft + this.pane[0].center[0],
+                    this.plotTop + this.pane[0].center[1],
+
+                    // Converts a axis space value into screen space.
+                    yAxis.len * (max / yAxis.max)
+                ).attr({
+                    fill: 'none',
+                    stroke: '#43BDFF6C',
+                    'stroke-width': 1,
+                    'stroke-dasharray': '5,5'
+                }).add();
             }
         }
     },
@@ -50,14 +57,7 @@ Highcharts.chart('container', {
     yAxis: {
         title: {
             enabled: false
-        },
-        plotLines: [
-            {
-                id: 'max',
-                dashStyle: 'Dash',
-                color: '#43BDFF6C'
-            }
-        ]
+        }
     },
     plotOptions: {
         column: {
