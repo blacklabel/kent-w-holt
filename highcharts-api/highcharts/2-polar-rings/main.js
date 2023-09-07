@@ -2,16 +2,24 @@ function generateRandomData(amount, max) {
     return Array.from({ length: amount }, () => Math.floor(Math.random() * max));
 }
 
+let circle;
+
 Highcharts.chart('container', {
     chart: {
         type: 'column',
         polar: true,
         events: {
             load: function () {
+                // Max indicator circle.
+                circle = this.renderer.circle().attr({
+                    fill: 'none',
+                    stroke: '#43BDFF6C',
+                    'stroke-width': 1,
+                    'stroke-dasharray': '5,5'
+                }).add();
+
                 const yAxis = this.yAxis[0];
-
                 const max = yAxis.dataMax;
-
                 this.update({
                     yAxis: {
                         max: 2 * max,
@@ -32,19 +40,18 @@ Highcharts.chart('container', {
                     dashStyle: 'Solid',
                     color: '#FD7E7E'
                 });
-
-                this.renderer.circle(
-                    this.plotLeft + this.pane[0].center[0],
-                    this.plotTop + this.pane[0].center[1],
-
+            },
+            render: function () {
+                const yAxis = this.yAxis[0];
+                const max = yAxis.dataMax;
+                const cx = this.plotLeft + this.pane[0].center[0];
+                const cy = this.plotTop + this.pane[0].center[1];
+                circle.attr({
+                    cx: cx,
+                    cy: cy,
                     // Converts a axis space value into screen space.
-                    yAxis.len * (max / yAxis.max)
-                ).attr({
-                    fill: 'none',
-                    stroke: '#43BDFF6C',
-                    'stroke-width': 1,
-                    'stroke-dasharray': '5,5'
-                }).add();
+                    r: yAxis.len * (max / yAxis.max),
+                });
             }
         }
     },
