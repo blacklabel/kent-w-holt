@@ -42,15 +42,11 @@ function placeButtons(chart, renderer, xAxis) {
                     'How to fix',
                     0,
                     0,
-                    () => console.log(`Action for category ${categories[i]} was clicked`)
-                ).attr(
-                    // Initial styling.
-                    buttonStyle
+                    () => console.log(`Action for category ${categories[i]} was clicked`),
+                    buttonStyle,
+                    buttonStyle,
                 ).add();
                 btn.id = categories[i];
-                // NOTE: Styles are being overridden by events, override those and re-apply/enforce styling.
-                btn.on('mouseover', () => btn.attr(buttonStyle));
-                btn.on('mouseleave', () => btn.attr(buttonStyle));
                 return btn;
             }
         );
