@@ -110,9 +110,39 @@ Highcharts.chart('part1', {
     series: [
         {
             data: [
-                { id: 'sun', x: 5, y: 5, z: 5, color: '#FFD900', marker: { radius: 10, symbol: 'circle' } },
-                { id: 'planet', x: 0, y: 5, z: 0, color: '#00A2FF', marker: { radius: 6, symbol: 'circle' } },
-                { id: 'moon', x: 0, y: 5, z: 0, color: '#AFAFAF', marker: { radius: 3, symbol: 'circle' } }
+                {
+                    id: 'sun',
+                    x: 5,
+                    y: 5,
+                    z: 5,
+                    color: {
+                        radialGradient: { cx: 0.35, cy: 0.35, r: 0.5 },
+                        stops: [[0, '#EEEEEE'], [1, '#FFD900']]
+                    },
+                    marker: { radius: 10, symbol: 'circle' }
+                },
+                {
+                    id: 'planet',
+                    x: 0,
+                    y: 5,
+                    z: 0,
+                    color: {
+                        radialGradient: { cx: 0.35, cy: 0.35, r: 0.4 },
+                        stops: [[0, '#EEEEEE'], [1, '#00A2FF']]
+                    },
+                    marker: { radius: 6, symbol: 'circle' }
+                },
+                {
+                    id: 'moon',
+                    x: 0,
+                    y: 5,
+                    z: 0,
+                    color: {
+                        radialGradient: { cx: 0.35, cy: 0.35, r: 0.3 },
+                        stops: [[0, '#EEEEEE'], [1, '#AFAFAF']]
+                    },
+                    marker: { radius: 3, symbol: 'circle' }
+                }
             ],
             point: {
                 events: {
