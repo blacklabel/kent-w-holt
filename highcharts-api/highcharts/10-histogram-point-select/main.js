@@ -1,7 +1,4 @@
 Highcharts.chart('container', {
-    title: {
-        text: 'Chart title'
-    },
     xAxis: [
         {
             alignTicks: false
@@ -12,12 +9,19 @@ Highcharts.chart('container', {
         }
     ],
     yAxis: [
-        {},
+        {
+            max: 12
+        },
         {
             opposite: true
         }
     ],
     plotOptions: {
+        histogram: {
+            borderRadius: 0,
+            borderWidth: 0,
+            pointPadding: 0
+        },
         series: {
             states: {
                 inactive: {
