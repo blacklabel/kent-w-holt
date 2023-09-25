@@ -1,18 +1,14 @@
 function generateRandomTree(depth, minChildren, maxChildren) {
-    if (depth <= 0 || minChildren > maxChildren) {
-        throw new Error('Invalid parameters');
-    }
-
-    let nodeId = 0;
+    let id = 0;
 
     function generateNode(currentDepth) {
-        const currentNodeId = (nodeId++).toString();
+        const currentId = (id++).toString();
         const childrenCount = Math.floor(Math.random() * (maxChildren - minChildren + 1)) + minChildren;
         const edges = [];
 
         if (currentDepth < depth) {
             for (let i = 0; i < childrenCount; i++) {
-                edges.push([currentNodeId, nodeId.toString()]);
+                edges.push([currentId, id.toString()]);
                 edges.push(...generateNode(currentDepth + 1));
             }
         }
@@ -24,7 +20,7 @@ function generateRandomTree(depth, minChildren, maxChildren) {
 }
 
 function setVisibility(node, visible, updateOnly) {
-    // Update nod visibility if not stated otherwise.
+    // Update node visibility if not stated otherwise.
     if (!updateOnly || updateOnly === 'nodes') { node.visible = visible; }
 
     // Update link visability.
@@ -156,22 +152,5 @@ Highcharts.chart('container', {
     },
     series: [{
         data: generateRandomTree(4, 1, 4)
-        /*data: [
-            ['Root', 'Child 1 - 0'],
-            ['Root', 'Child 2 - 0'],
-            ['Root', 'Child 3 - 0'],
-
-            ['Child 1 - 0', 'Child 4 - 1'],
-            ['Child 1 - 0', 'Child 5 - 1'],
-            ['Child 1 - 0', 'Child 6 - 1'],
-
-            ['Child 2 - 0', 'Child 7 - 2'],
-            ['Child 2 - 0', 'Child 8 - 2'],
-            ['Child 2 - 0', 'Child 9 - 2'],
-
-            ['Child 3 - 0', 'Child 10 - 3'],
-            ['Child 3 - 0', 'Child 11 - 3'],
-            ['Child 3 - 0', 'Child 12 - 3']
-        ]*/
     }]
 });
