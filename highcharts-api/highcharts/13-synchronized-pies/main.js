@@ -25,20 +25,6 @@ function getSamePointOnOtherSeries(chart, point) {
     return otherSeries.points[point.index];
 }
 
-function updateOtherTooltip(chart, point) {
-    chart.otherTooltip.update({
-        text: `${point.series.name}: <b>${point.y}</b>`
-    });
-    chart.otherTooltip.refresh(point);
-    chart.otherTooltip.move(
-        point.tooltipPos[0],
-        point.tooltipPos[1] + 10,
-        point.tooltipPos[0],
-        point.tooltipPos[1]
-    );
-}
-
-
 Highcharts.chart('container', {
     chart: {
         plotBackgroundColor: null,
@@ -50,11 +36,22 @@ Highcharts.chart('container', {
                 // Create tooltip for the other series.
                 this.otherTooltip = new Highcharts.Tooltip(this, this.options.tooltip);
                 this.otherTooltip.hide(); // Don't show yet.
+                // Shift the tooltip on mouse move and when we actually have an offset to follow.
+                this.container.addEventListener('mousemove', function () {
+                    if (this.otherTooltip.pointOffset) {
+                        this.otherTooltip.move(
+                            // Primary tooltip positon + point offset.
+                            this.tooltip.now.x + this.otherTooltip.pointOffset.x,
+                            this.tooltip.now.y + this.otherTooltip.pointOffset.y
+                        );
+                    }
+                }.bind(this));
             },
         }
     },
     plotOptions: {
         pie: {
+            colorByPoint: true,
             dataLabels: {
                 enabled: false
             },
@@ -74,7 +71,14 @@ Highcharts.chart('container', {
 
                         // Transfer our state and update the tooltip.
                         other.setState('hover');
-                        updateOtherTooltip(this.series.chart, other);
+                        
+                        // Update tooltip to point.
+                        this.series.chart.otherTooltip.refresh(other);
+                        // Take note of the point offset.
+                        this.series.chart.otherTooltip.pointOffset = {
+                            x: other.shapeArgs.x - this.shapeArgs.x,
+                            y: other.shapeArgs.y - this.shapeArgs.y
+                        };
                     },
                     mouseOut: function() {
                         // Transfer our state to the other series' point.
@@ -96,13 +100,11 @@ Highcharts.chart('container', {
     },
     series: [
         {
-            colorByPoint: true,
             data: data,
             center: ['25%', '50%'],
             showInLegend: true
         },
         {
-            colorByPoint: true,
             data: data,
             center: ['75%', '50%'],
         },
