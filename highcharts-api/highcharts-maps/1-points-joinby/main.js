@@ -1,5 +1,7 @@
 Highcharts.mapChart('container', {
-
+    chart: {
+        map: 'custom/world'
+    },
     series: [{
         data: [
             ['POL', 100],
@@ -10,5 +12,4 @@ Highcharts.mapChart('container', {
         ],
         joinBy: ['iso-a3']
     }]
-
 });
