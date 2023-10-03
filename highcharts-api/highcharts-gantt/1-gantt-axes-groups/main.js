@@ -1,5 +1,22 @@
 Highcharts.ganttChart('container', {
-
+    xAxis: {
+        labels: {
+            formatter: function () {
+                console.log(this)
+                const date = new Date(this.pos);
+                return `${
+                    date.toLocaleDateString('en-GB', { weekday: 'long' })
+                }, ${
+                    date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+                }, ${
+                    date.getFullYear()
+                }`;
+            }
+        }
+    },
+    yAxis: {
+        uniqueNames: true
+    },
     series: [{
         name: 'Project 1',
         data: [{
