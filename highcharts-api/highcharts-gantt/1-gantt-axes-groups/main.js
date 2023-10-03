@@ -2,7 +2,6 @@ Highcharts.ganttChart('container', {
     xAxis: {
         labels: {
             formatter: function () {
-                console.log(this)
                 const date = new Date(this.pos);
                 return `${
                     date.toLocaleDateString('en-GB', { weekday: 'long' })
