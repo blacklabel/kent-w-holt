@@ -18,11 +18,19 @@
   <link rel="stylesheet" type="text/css" href="https://code.highcharts.com/css/annotations/popup.css">
 
   <style>
-    .highcharts-data-grouping-button {
-      background-image: url(https://cdn4.iconfinder.com/data/icons/database-32/24/cdn-server-database-setting-512.png);
-      background-size: 80%;
-      background-repeat: no-repeat;
-      background-position: 50%;
+    #grouping-settings-popup {
+      .highcharts-popup-wrapper {
+        div {
+          display: flex; flex-direction: row;
+          label {
+            width: max-content;
+            margin-right: 1em;
+          }
+          input {
+            width: max-content;
+          }
+        }
+      }
     }
   </style>
 </head>
@@ -36,6 +44,40 @@
   <div id="containerB"></div>
   <div class="tools-containerB">
     <button id="live-data-b">LIVE DATA</button>
+  </div>
+  <div class="highcharts-popup" id="grouping-settings-popup" style="display: none; padding: 1em">
+    <div class="highcharts-popup-wrapper">
+      <div>
+        <label for="enabled">Enabled:</label>
+        <input id="enabled" type="checkbox" name="enabled" checked/>
+      </div>
+
+      <div>
+        <label for="all">Group all:</label>
+        <input id="all" type="checkbox" name="all"/>
+      </div>
+
+      <div>
+        <label for="forced">Forced:</label>
+        <input id="forced" type="checkbox" name="forced"/>
+      </div>
+
+      <div>
+        <label for="anchor">Choose a anchor:</label>
+        <select name="anchor" id="anchor" value="start">
+          <option value="start">start</option>
+          <option value="middle">middle</option>
+          <option value="end">end</option>
+        </select> 
+      </div>
+
+      <div>
+        <label for="pixelWidth">Grouped pixel width:</label>
+        <input id="pixelWidth" type="number" name="pixelWidth" value="2"/>
+      </div>
+    </div>
+    <button class="button" id="save">Save</button>
+    <div id="close" class="highcharts-popup-close" style="background-image: url('https://code.highcharts.com/11.1.0/gfx/stock-icons/close.svg');"></div>
   </div>
 </body>
 

@@ -1,34 +1,28 @@
-/*function randomDataEntry(min, max) {
-    const value = Math.floor(Math.random() * (max - min) + min);
-    return [
-        new Date(),
-        value + Math.floor(Math.random() * (3.5 - -3.5) + -3.5),
-        value + Math.floor(Math.random() * (3.5 - -3.5) + -3.5),
-        value + Math.floor(Math.random() * (3.5 - -3.5) + -3.5),
-        value + Math.floor(Math.random() * (3.5 - -3.5) + -3.5)
-    ];
-}*/
 function randomDataEntry(min, max) {
     return [new Date().getTime(), Math.floor(Math.random() * (max - min) + min)];
+}
+
+function setupLiveDataToggle(chart, id) {
+    document.getElementById(id)?.addEventListener(
+        'click',
+        function () {
+            if (!chart.liveDataInterval) {
+                chart.liveDataInterval = setInterval(function () {
+                    chart.series[0].addPoint(randomDataEntry(10, 100), true, true);
+                }, 1000);
+            } else {
+                clearInterval(chart.liveDataInterval);
+                chart.liveDataInterval = undefined;
+            }
+        }
+    );
 }
 
 Highcharts.stockChart('containerA', {
     chart: {
         events: {
             load: function () {
-                document.getElementById('live-data-a')?.addEventListener(
-                    'click',
-                    function () {
-                        if (!this.liveDataInterval) {
-                            this.liveDataInterval = setInterval(function () {
-                                this.series[0].addPoint(randomDataEntry(10, 100), true, true);
-                            }.bind(this), 1000);
-                        } else {
-                            clearInterval(this.liveDataInterval);
-                            this.liveDataInterval = undefined;
-                        }
-                    }.bind(this)
-                );
+                setupLiveDataToggle(this, 'live-data-a');
             }
         }
     },
@@ -81,47 +75,89 @@ Highcharts.stockChart('containerA', {
     ]
 });
 
+function mapGroupingDialogElements(chart) {
+    chart.groupingDialog = {
+        container: document.querySelector('#grouping-settings-popup'),
+        enabled: document.querySelector('#grouping-settings-popup #enabled'),
+        all: document.querySelector('#grouping-settings-popup #all'),
+        forced: document.querySelector('#grouping-settings-popup #forced'),
+        anchor: document.querySelector('#grouping-settings-popup #anchor'),
+        pixelWidth: document.querySelector('#grouping-settings-popup #pixelWidth'),
+        close: document.querySelector('#grouping-settings-popup #close'),
+        save: document.querySelector('#grouping-settings-popup #save')
+    };
+}
+
+function setupSaveGrouping(chart) {
+    chart.groupingDialog.save.addEventListener('click', function () {
+        chart.series[0].update({
+            dataGrouping: {
+                enabled: chart.groupingDialog.enabled.value,
+                groupAll: chart.groupingDialog.all.value,
+                forced: chart.groupingDialog.forced.value,
+                anchor: chart.groupingDialog.anchor.value,
+                groupPixelWidth: chart.groupingDialog.pixelWidth.value,
+            }
+        });
+        chart.groupingDialog.container.style.display = 'none';
+    });
+}
+
+function fillGroupingDialogFields(chart, data) {
+    chart.groupingDialog.enabled.value = data.enabled;
+    chart.groupingDialog.all.value = data.groupAll;
+    chart.groupingDialog.forced.value = data.forced;
+    // "anchor" isn't defined by default but should be "start" according
+    // to API Doc: https://api.highcharts.com/highstock/series.line.dataGrouping.anchor
+    chart.groupingDialog.anchor.value = data.anchor ?? 'start';
+    chart.groupingDialog.pixelWidth.value = data.groupPixelWidth;
+}
+
 Highcharts.stockChart('containerB', {
     chart: {
         events: {
             load: function () {
                 console.log(this)
-                document.getElementById('live-data-b')?.addEventListener(
-                    'click',
-                    function () {
-                        if (!this.liveDataInterval) {
-                            this.liveDataInterval = setInterval(function () {
-                                this.series[0].addPoint(randomDataEntry(10, 100), true, true);
-                            }.bind(this), 1000);
-                        } else {
-                            clearInterval(this.liveDataInterval);
-                            this.liveDataInterval = undefined;
-                        }
-                    }.bind(this)
-                );
+                // Random data toggle button handling.
+                setupLiveDataToggle(this, 'live-data-b');
+                // Fetch all components of the grouping dialog.
+                mapGroupingDialogElements(this);
+                // Close button, cancel and hide dialog.
+                this.groupingDialog.close.addEventListener('click', (function () {
+                    this.groupingDialog.container.style.display = 'none';
+                }).bind(this));
+                // Handling of updating the chart.
+                setupSaveGrouping(this);
             }
         }
     },
     stockTools: {
         gui: {
-            enabled: true,
-            buttons: ['customButton', 'indicators', 'separator', 'simpleShapes', 'lines', 'crookedLines', 'measure', 'advanced', 'toggleAnnotations', 'separator', 'verticalLabels', 'flags', 'separator', 'zoomChange', 'fullScreen', 'typeChange', 'separator', 'currentPriceIndicator', 'saveChart' ],
+            buttons: ['grouping'],
             definitions: {
-                customButton: {
+                grouping: {
+                    symbol: 'indicators.svg',
                     title: 'Data Grouping',
-                    className: 'highcharts-data-grouping-button'
-                }
+                    className: 'highcharts-data-grouping-button',
+                },
             }
         }
     },
     navigation: {
+        bindingsClassName: 'tools-container',
         bindings: {
-            customButton: {
+            grouping: {
                 className: 'highcharts-data-grouping-button',
-                click: function(event) {
-                    console.log(event);
-                    // Handle the button click, e.g., change DataGrouping options
-                }
+                // Handling click for the toolbar button.
+                init: function() {
+                    // Set the field values to current settings.
+                    fillGroupingDialogFields(this.chart, this.chart.series[0].options.dataGrouping);
+                    const dialog = this.chart.groupingDialog.container;
+                    dialog.style.display = dialog.style.display === 'block'
+                        ? 'none'
+                        : 'block';
+                },
+                
             }
         }
     },
