@@ -10,6 +10,7 @@ Highcharts.mapChart('container', {
             ['TZA', 40],
             ['AUS', 1]
         ],
+        keys: ['iso-a3', 'value'],
         joinBy: ['iso-a3']
     }]
 });
