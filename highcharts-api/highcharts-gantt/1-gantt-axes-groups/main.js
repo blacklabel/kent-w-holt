@@ -1,10 +1,21 @@
 Highcharts.ganttChart('container', {
-
+    xAxis: [
+        // Had to wrap axis definition in a list to get rid of extra axis label
+        // group + for dateTimeLabelFormats to work.
+        {
+            tickInterval: 7 * 24 * 3600 * 1000, // one week in milliseconds
+            dateTimeLabelFormats: {
+                week: '%A, %e %b, %Y'
+            },
+        }
+    ],
+    yAxis: {
+        uniqueNames: true
+    },
     series: [{
         name: 'Project 1',
         data: [{
-            name: 'Main',
-            pointWidth: 0
+            name: 'Main'
         }, {
             name: 'First',
             start: 1560902400000,
